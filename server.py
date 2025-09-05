@@ -48,6 +48,6 @@ class SimpleLoginServer(BaseHTTPRequestHandler):
 
 # Run server
 if __name__ == "__main__":
-    server = HTTPServer(("localhost", 5000), SimpleLoginServer)
-    print("Server running at http://localhost:5000")
+    server = HTTPServer(("localhost", 8000), SimpleLoginServer)
+    print("Server running at http://localhost:8000")
     server.serve_forever()
