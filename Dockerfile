@@ -31,8 +31,9 @@ RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d. -f1) \
 # Copy requirements first (for Docker caching)
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies including SeleniumLibrary
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install robotframework-seleniumlibrary selenium
 
 # Copy the rest of the app (server + Robot tests)
 COPY . .
