@@ -1,4 +1,4 @@
-name: Build, Run and Test with Robot Framework
+name: Build, Run and Test with Robot Framework (Inside Docker)
 
 on:
   push:
@@ -27,13 +27,11 @@ jobs:
       - name: Wait for server to start
         run: sleep 10
 
-      - name: Install Robot Framework
-        run: pip install robotframework
-
-      - name: Run Robot Framework Tests
-        run: robot login_test.robot
+      - name: Run Robot Framework Tests inside container
+        run: docker exec my-app-container robot login_test.robot
 
       - name: Show Docker logs if test fails
         if: failure()
         run: docker logs my-app-container
+
 
