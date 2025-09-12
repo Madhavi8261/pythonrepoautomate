@@ -29,7 +29,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expose port 8000
-EXPOSE 8000
+EXPOSE 5000
 
 # Run the app (change app.py to your entrypoint file)
 CMD ["python", "server.py"]
