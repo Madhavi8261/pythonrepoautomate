@@ -27,8 +27,8 @@ jobs:
       - name: Wait for server to start
         run: sleep 15
 
-      - name: Run Robot Framework Test (login_test.robot)
-        run: docker exec my-app-container robot login_test.robot
+      - name: Run Robot Framework Test
+        run: docker exec my-app-container robot /app/login_test.robot
 
       - name: Show Docker logs if test fails
         if: failure()
