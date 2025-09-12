@@ -5,14 +5,14 @@ Library    SeleniumLibrary
 *** Variables ***
 ${URL}         http://localhost:5000
 ${BROWSER}     chrome
-@{CHROME_OPTIONS}    --headless=new    --no-sandbox    --disable-dev-shm-usage    --user-data-dir=/tmp/chrome-user-data
+
 ${USERNAME}    admin
 ${PASSWORD}    1234
 
 *** Test Cases ***
 Valid Login Should Redirect To Dashboard
     [Documentation]    Open login page, enter correct credentials, and verify dashboard 
-    Open Browser    ${URL}    ${BROWSER}    options=${CHROME_OPTIONS}
+    Open Browser    ${URL}    ${BROWSER}    options=add_argument("--headless")
     Input Text    name=username    ${USERNAME}
     Input Text    name=password    ${PASSWORD}
     Click Button    xpath=//button[@type="submit"]
