@@ -7,7 +7,7 @@ ${PASSWORD}    1234
 
 *** Test Cases ***
 Valid Login Should Redirect To Dashboard
-    [Documentation]    Open login page, enter correct credentials, and verify dashboard and
+    [Documentation]    Open login page, enter correct credentials, and verify dashboard 
     Open Browser    ${URL}    ${BROWSER}    options=${CHROME_OPTIONS}
     Input Text    name=username    ${USERNAME}
     Input Text    name=password    ${PASSWORD}
