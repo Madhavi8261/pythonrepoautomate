@@ -3,9 +3,9 @@ name: Build, Run and Test with Robot Framework (Inside Docker)
 on:
   push:
     branches:
-      - master      # Runs automatically when you push to master
-  pull_request:      # Runs automatically on pull requests
-  workflow_dispatch: # Allows manual run from GitHub UI
+      - master
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
@@ -21,17 +21,15 @@ jobs:
       - name: Build Docker image
         run: docker build -t my-app-image .
 
-      - name: Run container in background
+      - name: Run server container
         run: docker run -d -p 5000:5000 --name my-app-container my-app-image
 
       - name: Wait for server to start
-        run: sleep 10
+        run: sleep 15
 
-      - name: Run Robot Framework Tests inside container
+      - name: Run Robot Framework Test (login_test.robot)
         run: docker exec my-app-container robot login_test.robot
 
       - name: Show Docker logs if test fails
         if: failure()
         run: docker logs my-app-container
-
-
