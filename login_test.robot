@@ -6,12 +6,12 @@ ${URL}         http://localhost:5000
 ${BROWSER}     chrome
 ${USERNAME}    admin
 ${PASSWORD}    1234
+${CHROME_OPTIONS}    --headless=new --no-sandbox --disable-dev-shm-usage --user-data-dir=/tmp/chrome-user-data
 
 *** Test Cases ***
 Valid Login Should Redirect To Dashboard
     [Documentation]    Open login page, enter correct credentials, and verify dashboard.
-    ${chrome_options}=    Create List    --headless=new    --no-sandbox    --disable-dev-shm-usage    --user-data-dir=/tmp/chrome-user-data
-    Open Browser    ${URL}    ${BROWSER}    options=${chrome_options}
+    Open Browser    ${URL}    ${BROWSER}    options=${CHROME_OPTIONS}
     Input Text    name=username    ${USERNAME}
     Input Text    name=password    ${PASSWORD}
     Click Button    xpath=//button[@type="submit"]
@@ -20,8 +20,7 @@ Valid Login Should Redirect To Dashboard
 
 Invalid Login Should Show Error
     [Documentation]    Enter wrong credentials and verify error message.
-    ${chrome_options}=    Create List    --headless=new    --no-sandbox    --disable-dev-shm-usage    --user-data-dir=/tmp/chrome-user-data
-    Open Browser    ${URL}    ${BROWSER}    options=${chrome_options}
+    Open Browser    ${URL}    ${BROWSER}    options=${CHROME_OPTIONS}
     Input Text    name=username    wronguser
     Input Text    name=password    wrongpass
     Click Button    xpath=//button[@type="submit"]
