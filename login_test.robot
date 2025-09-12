@@ -21,7 +21,7 @@ Valid Login Should Redirect To Dashboard
 
 Invalid Login Should Show Error
     [Documentation]    Enter wrong credentials and verify error message.
-    Open Browser    ${URL}    ${BROWSER}    options=${CHROME_OPTIONS}
+    Open Browser    ${URL}    ${BROWSER}    options=add_argument("--headless")
     Input Text    name=username    wronguser
     Input Text    name=password    wrongpass
     Click Button    xpath=//button[@type="submit"]
