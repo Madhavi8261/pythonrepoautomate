@@ -1,12 +1,9 @@
-*** Settings ***
-Library    SeleniumLibrary
-
 *** Variables ***
 ${URL}         http://localhost:5000
 ${BROWSER}     chrome
+@{CHROME_OPTIONS}    --headless=new    --no-sandbox    --disable-dev-shm-usage    --user-data-dir=/tmp/chrome-user-data
 ${USERNAME}    admin
 ${PASSWORD}    1234
-${CHROME_OPTIONS}    --headless=new --no-sandbox --disable-dev-shm-usage --user-data-dir=/tmp/chrome-user-data
 
 *** Test Cases ***
 Valid Login Should Redirect To Dashboard
