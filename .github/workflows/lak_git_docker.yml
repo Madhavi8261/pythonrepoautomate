@@ -1,0 +1,37 @@
+name: Build, Run and Test with Robot Framework
+
+on:
+  push:
+    branches:
+      - master   # Runs when you push to master branch
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: docker build -t my-app-image .
+
+      - name: Run container in background
+        run: docker run -d -p 5000:5000 --name my-app-container my-app-image
+
+      - name: Wait for server to start
+        run: sleep 10
+
+      - name: Install Robot Framework
+        run: pip install robotframework
+
+      - name: Run Robot Framework Tests
+        run: robot login_test.robot
+
+      - name: Show Docker logs (for debugging if test fails)
+        if: failure()
+        run: docker logs my-app-container
