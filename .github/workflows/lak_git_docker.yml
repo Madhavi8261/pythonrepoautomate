@@ -3,8 +3,9 @@ name: Build, Run and Test with Robot Framework
 on:
   push:
     branches:
-      - master   # Runs when you push to master branch
-  pull_request:
+      - master      # Runs automatically when you push to master
+  pull_request:      # Runs automatically on pull requests
+  workflow_dispatch: # Allows manual run from GitHub UI
 
 jobs:
   test:
@@ -32,6 +33,7 @@ jobs:
       - name: Run Robot Framework Tests
         run: robot login_test.robot
 
-      - name: Show Docker logs (for debugging if test fails)
+      - name: Show Docker logs if test fails
         if: failure()
         run: docker logs my-app-container
+
