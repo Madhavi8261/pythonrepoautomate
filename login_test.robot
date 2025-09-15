@@ -11,7 +11,7 @@ ${PASSWORD}    1234
 
 *** Test Cases ***
 Valid Login Should Redirect To Dashboard
-    [Documentation]    Open login page, enter correct credentials, and verify dashboard 
+    [Documentation]    Open login page, enter correct credentials, and verify dashboar
     Open Browser    ${URL}    ${BROWSER}    options=add_argument("--headless")
     Input Text    name=username    ${USERNAME}
     Input Text    name=password    ${PASSWORD}
