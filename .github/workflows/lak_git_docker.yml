@@ -50,15 +50,14 @@ jobs:
           set -euo pipefail
 
           echo "➡️ Downloading Render CLI v2.2.0"
-          curl -fL -o render-cli.zip https://github.com/render-oss/cli/releases/download/v2.2.0/cli_2.2.0_linux_amd64.zip
+          curl -fsSL -o render-cli.zip https://github.com/render-oss/cli/releases/download/v2.2.0/cli_2.2.0_linux_amd64.zip
 
           echo "➡️ Extracting Render CLI"
-          unzip -q render-cli.zip -d render_cli_extracted
-          ls -R render_cli_extracted
+          unzip render-cli.zip -d render_cli_extracted
 
-          echo "➡️ Moving render binary to PATH"
-          sudo mv render_cli_extracted/render /usr/local/bin/render
-          sudo chmod +x /usr/local/bin/render
+          echo "➡️ Making binary executable and moving to PATH"
+          chmod +x render_cli_extracted/cli_v2.2.0
+          sudo mv render_cli_extracted/cli_v2.2.0 /usr/local/bin/render
 
           echo "➡️ Checking Render CLI version"
           render --version
