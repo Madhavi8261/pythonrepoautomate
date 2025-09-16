@@ -46,8 +46,7 @@ jobs:
         if: success()
         run: |
           # Download latest Render CLI release tarball
-          curl -Lo render-cli.tar.gz https://github.com/render-oss/cli/releases/latest/download/render-cli_linux_amd64.tar.gz
-
+          curl -Lo render.tar.gz https://github.com/render-oss/cli/releases/download/v2.1.4/render_linux_amd64.tar.gz
           # Extract the tarball
           tar -xzf render-cli.tar.gz
 
