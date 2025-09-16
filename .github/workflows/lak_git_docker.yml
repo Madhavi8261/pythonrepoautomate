@@ -46,13 +46,10 @@ jobs:
         if: success()
         run: |
           # Download the latest Render CLI release for Linux
-          curl -fsSL https://github.com/render-oss/cli/releases/download/v2.2.0/render-cli-linux-amd64.tar.gz -o render-cli.tar.gz
+          curl -fsSL https://render.com/install | bash
 
-          # Extract the binary
-          tar -xzf render-cli.tar.gz
 
-          # Move binary to PATH
-          sudo mv render-cli /usr/local/bin/render
+          
 
           # Verify installation
           render --version
