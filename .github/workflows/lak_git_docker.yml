@@ -45,15 +45,19 @@ jobs:
       - name: Install Render CLI
         if: success()
         run: |
-           curl -fsSL https://render.com/install | bash
-           echo "$HOME/.render/bin" >> $GITHUB_PATH
+          curl -fsSL https://render.com/install | bash
+          echo "$HOME/.render/bin" >> $GITHUB_PATH
 
       # 9️⃣ Authenticate with Render
       - name: Authenticate with Render
         if: success()
-        run: render login --api-key ${{ secrets.RENDER_API_KEY }}
+        run: |
+          export PATH="$HOME/.render/bin:$PATH"
+          render login --api-key ${{ secrets.RENDER_API_KEY }}
 
       # 🔟 Deploy to Render (only if tests pass)
       - name: Deploy to Render
         if: success()
-        run: render deploy service <SERVICE-ID> --branch master
+        run: |
+          export PATH="$HOME/.render/bin:$PATH"
+          render deploy service <SERVICE-ID> --branch master
