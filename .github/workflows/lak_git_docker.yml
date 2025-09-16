@@ -41,23 +41,14 @@ jobs:
         if: failure()
         run: docker logs my-app-container
 
-      # 8️⃣ Install Render CLI (only if tests pass)
+      # 8️⃣Install Render CLI, Authenticate and Deploy (only if tests pass)
       - name: Install Render CLI
         if: success()
         run: |
           curl -fsSL https://render.com/install | bash
-          echo "$HOME/.render/bin" >> $GITHUB_PATH
+          $HOME/.render/bin/render login --api-key ${{ secrets.RENDER_API_KEY }}
+          $HOME/.render/bin/render deploy service <SERVICE-ID> --branch master
 
-      # 9️⃣ Authenticate with Render
-      - name: Authenticate with Render
-        if: success()
-        run: |
-          export PATH="$HOME/.render/bin:$PATH"
-          render login --api-key ${{ secrets.RENDER_API_KEY }}
+     
 
-      # 🔟 Deploy to Render (only if tests pass)
-      - name: Deploy to Render
-        if: success()
-        run: |
-          export PATH="$HOME/.render/bin:$PATH"
-          render deploy service <SERVICE-ID> --branch master
+      
