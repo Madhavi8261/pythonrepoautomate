@@ -41,11 +41,24 @@ jobs:
         if: failure()
         run: docker logs my-app-container
 
-      # 8️⃣ Deploy to Render using the official action
-      - name: Deploy to Render
+      # 8️⃣ Install Render CLI, Authenticate and Deploy (only if tests pass)
+      - name: Install Render CLI and Deploy
         if: success()
-        uses: render-inc/deploy-action@v1 # <-- This is the verified, correct action name
-        with:
-          serviceId: <SERVICE-ID>
-          apiKey: ${{ secrets.RENDER_API_KEY }}
-          branch: master
+        run: |
+          # Download latest Render CLI release tarball (confirmed v2.1.4)
+          curl -Lo render.tar.gz https://github.com/render-oss/cli/releases/download/v2.1.4/render_linux_amd64.tar.gz
+
+          # Extract the tarball
+          tar -xzf render.tar.gz
+
+          # Move the binary to PATH
+          sudo mv render /usr/local/bin/
+
+          # Verify installation
+          render --version
+
+          # Authenticate with Render API key
+          render login --api-key ${{ secrets.RENDER_API_KEY }}
+
+          # Deploy the service
+          render deploy service <SERVICE-ID> --branch master
