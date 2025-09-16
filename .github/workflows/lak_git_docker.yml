@@ -41,28 +41,11 @@ jobs:
         if: failure()
         run: docker logs my-app-container
 
-      # 8️⃣ Install Render CLI, Authenticate and Deploy (only if tests pass)
-      - name: Install Render CLI and Deploy
+      # 8️⃣ Deploy to Render using the official action
+      - name: Deploy to Render
         if: success()
-        run: |
-          # Install the latest Render CLI using a direct installation script
-          curl -o- https://cli.render.com/install.sh | bash
-          
-          # Find the absolute path of the 'render' executable
-          # This is the most reliable way to find it after installation
-          RENDER_PATH=$(find /home/runner/ -name render -type f -print -quit)
-          
-          # Check if the path was found
-          if [ -z "$RENDER_PATH" ]; then
-            echo "Error: Render CLI binary not found after installation."
-            exit 1
-          fi
-          
-          # Verify installation using the full path
-          $RENDER_PATH --version
-
-          # Authenticate with Render API key using the full path
-          $RENDER_PATH login --api-key ${{ secrets.RENDER_API_KEY }}
-
-          # Deploy the service using the full path
-          $RENDER_PATH deploy service <SERVICE-ID> --branch master
+        uses: render-oss/action@v0.0.3
+        with:
+          serviceId: <SERVICE-ID>
+          apiKey: ${{ secrets.RENDER_API_KEY }}
+          branch: master
