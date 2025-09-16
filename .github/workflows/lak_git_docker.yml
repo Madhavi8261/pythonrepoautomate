@@ -63,4 +63,5 @@ jobs:
           render --version
 
           echo "➡️ Deploying service to Render (non-interactive)"
-          render deploys create --service srv-d34fsmjipnbc73fuirlg --branch master -o json
+          render deploys create srv-d34fsmjipnbc73fuirlg --branch master -o json
+
