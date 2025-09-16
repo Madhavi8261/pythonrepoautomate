@@ -62,8 +62,8 @@ jobs:
           echo "➡️ Checking Render CLI version"
           render --version
 
-          echo "➡️ Authenticating with Render"
-          render login --api-key "${RENDER_API_KEY}"
+          echo "➡️ Authenticating with Render CLI (non-interactive)"
+          render login --confirm
 
-          echo "➡️ Deploying service"
+          echo "➡️ Deploying service to Render"
           render deploy service <SERVICE-ID> --branch master
