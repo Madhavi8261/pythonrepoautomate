@@ -44,7 +44,7 @@ jobs:
       # 8️⃣ Install Render CLI (only if tests pass)
       - name: Install Render CLI
         if: success()
-        run: npm install -g @render/cli
+        run: curl -fsSL https://render.com/install | bash
 
       # 9️⃣ Authenticate with Render
       - name: Authenticate with Render
