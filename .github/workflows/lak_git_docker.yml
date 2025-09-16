@@ -41,12 +41,12 @@ jobs:
         if: failure()
         run: docker logs my-app-container
 
-      # 8️⃣ Install Render CLI, Authenticate and Deploy (only if tests pass)
-      - name: Install Render CLI and Deploy
+      # 8️⃣ Install Official Render CLI, Authenticate and Deploy (only if tests pass)
+      - name: Install Official Render CLI and Deploy
         if: success()
         run: |
-          # Download Render CLI tarball (Linux)
-          curl -fsSL https://github.com/nats-io/natscli/releases/download/v0.1.1/render-cli-linux-amd64.tar.gz -o render-cli.tar.gz
+          # Download the latest Render CLI release for Linux
+          curl -fsSL https://github.com/render-oss/cli/releases/download/v2.2.0/render-cli-linux-amd64.tar.gz -o render-cli.tar.gz
 
           # Extract the binary
           tar -xzf render-cli.tar.gz
@@ -54,7 +54,7 @@ jobs:
           # Move binary to PATH
           sudo mv render-cli /usr/local/bin/render
 
-          # Verify installation (optional)
+          # Verify installation
           render --version
 
           # Authenticate and deploy
