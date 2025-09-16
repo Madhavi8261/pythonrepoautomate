@@ -19,7 +19,7 @@ Open Chrome With Options
 
 *** Test Cases ***
 Valid Login Should Redirect To Dashboard
-    [Documentation]    Open login page, enter correct credentials, and verify dashboard
+    [Documentation]    Open login page, enter correct credentials, and verify dashboardy
     Open Chrome With Options
     Input Text    name=username    ${USERNAME}
     Input Text    name=password    ${PASSWORD}
