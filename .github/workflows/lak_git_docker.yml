@@ -63,5 +63,5 @@ jobs:
           render --version
 
           echo "➡️ Deploying service to Render (non-interactive)"
-          render deploys create <SERVICE-ID> --image <IMAGE-URL> --wait -o json --confirm
+          render deploys create srv-d34fsmjipnbc73fuirlg --image <IMAGE-URL> --wait -o json --confirm
 
