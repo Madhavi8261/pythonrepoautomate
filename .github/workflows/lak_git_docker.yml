@@ -41,19 +41,24 @@ jobs:
         if: failure()
         run: docker logs my-app-container
 
-      # 8️⃣ Install Official Render CLI, Authenticate and Deploy (only if tests pass)
-      - name: Install Official Render CLI and Deploy
+      # 8️⃣ Install Render CLI, Authenticate and Deploy (only if tests pass)
+      - name: Install Render CLI and Deploy
         if: success()
         run: |
-          # Download the latest Render CLI release for Linux
-          curl -fsSL https://render.com/install | bash
+          # Download latest Render CLI binary for Linux
+          curl -Lo render https://github.com/renderinc/cli/releases/latest/download/render-linux-amd64
 
+          # Make binary executable
+          chmod +x render
 
-          
+          # Move binary to PATH
+          sudo mv render /usr/local/bin/
 
           # Verify installation
           render --version
 
-          # Authenticate and deploy
+          # Authenticate with Render API key
           render login --api-key ${{ secrets.RENDER_API_KEY }}
+
+          # Deploy the service
           render deploy service <SERVICE-ID> --branch master
