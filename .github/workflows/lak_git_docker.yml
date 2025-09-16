@@ -1,64 +1,34 @@
-name: Build, Run, Test, and Deploy
+name: Render Deploy
 
 on:
   push:
     branches:
-      - master
-  pull_request:
-  workflow_dispatch:
+      - master   # change this if your main branch is different
 
 jobs:
-  test-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      # 2️⃣ Set up Docker Buildx
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      # 3️⃣ Build Docker image
-      - name: Build Docker image
-        run: docker build -t my-app-image .
-
-      # 4️⃣ Run server container
-      - name: Run server container
-        run: docker run -d -p 5000:5000 --name my-app-container my-app-image
-
-      # 5️⃣ Wait for server to start
-      - name: Wait for server to start
-        run: sleep 15
-
-      # 6️⃣ Run Robot Framework Tests
-      - name: Run Robot Framework Tests
-        run: docker exec -i my-app-container /bin/bash -c "robot /app/login_test.robot"
-
-      # 7️⃣ Show Docker logs if test fails
-      - name: Show Docker logs if test fails
-        if: failure()
-        run: docker logs my-app-container
-
-      # 8️⃣ Install Render CLI, Authenticate and Deploy (only if tests pass)
       - name: Install Render CLI and Deploy
-        if: success()
         run: |
-          # Download latest Render CLI release tarball (confirmed v2.1.4)
-          curl -Lo render.tar.gz https://github.com/render-oss/cli/releases/download/v2.1.4/render_linux_amd64.tar.gz
+          echo "➡️ Downloading Render CLI v2.1.4"
+          curl -L -o render.tar.gz https://github.com/render-oss/cli/releases/download/v2.1.4/render_linux_amd64.tar.gz
 
-          # Extract the tarball
+          echo "➡️ Extracting CLI"
           tar -xzf render.tar.gz
 
-          # Move the binary to PATH
+          echo "➡️ Moving binary to /usr/local/bin"
           sudo mv render /usr/local/bin/
 
-          # Verify installation
+          echo "➡️ Checking version"
           render --version
 
-          # Authenticate with Render API key
+          echo "➡️ Logging in with API key"
           render login --api-key ${{ secrets.RENDER_API_KEY }}
 
-          # Deploy the service
+          echo "➡️ Deploying service"
           render deploy service <SERVICE-ID> --branch master
