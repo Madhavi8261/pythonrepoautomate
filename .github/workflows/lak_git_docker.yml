@@ -45,9 +45,20 @@ jobs:
       - name: Install Render CLI
         if: success()
         run: |
-          curl -fsSL https://render.com/install | bash
-          $HOME/.render/bin/render login --api-key ${{ secrets.RENDER_API_KEY }}
-          $HOME/.render/bin/render deploy service <SERVICE-ID> --branch master
+    # Download Render CLI tarball (Linux)
+        curl -fsSL https://github.com/nats-io/natscli/releases/download/v0.1.1/render-cli-linux-amd64.tar.gz -o render-cli.tar.gz
+    # Extract the binary
+        tar -xzf render-cli.tar.gz
+
+    # Move binary to PATH
+        sudo mv render-cli /usr/local/bin/render
+
+    # Verify installation (optional)
+         render --version
+
+    # Authenticate and deploy
+         render login --api-key ${{ secrets.RENDER_API_KEY }}
+         render deploy service <SERVICE-ID> --branch master
 
      
 
