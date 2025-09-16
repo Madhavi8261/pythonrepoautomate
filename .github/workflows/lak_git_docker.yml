@@ -47,19 +47,22 @@ jobs:
         run: |
           # Install the latest Render CLI using a direct installation script
           curl -o- https://cli.render.com/install.sh | bash
-
-      # 9️⃣ Authenticate and Deploy
-      - name: Authenticate and Deploy
-        if: success()
-        run: |
-          # Add the installation directory to the PATH for this step and subsequent steps
-          echo "/home/runner/bin" >> $GITHUB_PATH
-
-          # Verify installation
-          render --version
           
-          # Authenticate with Render API key
-          render login --api-key ${{ secrets.RENDER_API_KEY }}
+          # Find the absolute path of the 'render' executable
+          # This is the most reliable way to find it after installation
+          RENDER_PATH=$(find /home/runner/ -name render -type f -print -quit)
+          
+          # Check if the path was found
+          if [ -z "$RENDER_PATH" ]; then
+            echo "Error: Render CLI binary not found after installation."
+            exit 1
+          fi
+          
+          # Verify installation using the full path
+          $RENDER_PATH --version
 
-          # Deploy the service
-          render deploy service <SERVICE-ID> --branch master
+          # Authenticate with Render API key using the full path
+          $RENDER_PATH login --api-key ${{ secrets.RENDER_API_KEY }}
+
+          # Deploy the service using the full path
+          $RENDER_PATH deploy service <SERVICE-ID> --branch master
