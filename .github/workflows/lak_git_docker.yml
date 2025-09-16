@@ -63,4 +63,4 @@ jobs:
           render --version
 
           echo "➡️ Deploying service to Render (non-interactive)"
-          render deploy service <SERVICE-ID> --branch master -o json
+          render deploy service srv-d34fsmjipnbc73fuirlg --branch master -o json
