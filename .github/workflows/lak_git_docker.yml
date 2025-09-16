@@ -46,10 +46,10 @@ jobs:
         if: success()
         run: |
           echo "➡️ Downloading Render CLI v2.1.4"
-          curl -L -o render.tar.gz https://github.com/render-oss/cli/releases/download/v2.1.4/render_linux_amd64.tar.gz
+          curl -L -o render https://github.com/render-oss/cli/releases/download/v2.1.4/render_linux_amd64.tar.gz
 
-          echo "➡️ Extracting CLI"
-          tar -xzf render.tar.gz
+          echo "➡️ Making binary executable"
+          chmod +x render
 
           echo "➡️ Moving binary to PATH"
           sudo mv render /usr/local/bin/
