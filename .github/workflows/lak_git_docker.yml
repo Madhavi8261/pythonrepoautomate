@@ -45,10 +45,11 @@ jobs:
       - name: Install Render CLI and Deploy
         if: success()
         run: |
-          # Download latest Render CLI release tarball
+          # Download latest Render CLI release tarball (confirmed v2.1.4)
           curl -Lo render.tar.gz https://github.com/render-oss/cli/releases/download/v2.1.4/render_linux_amd64.tar.gz
+
           # Extract the tarball
-          tar -xzf render-cli.tar.gz
+          tar -xzf render.tar.gz
 
           # Move the binary to PATH
           sudo mv render /usr/local/bin/
