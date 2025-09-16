@@ -45,20 +45,13 @@ jobs:
       - name: Install Render CLI and Deploy
         if: success()
         run: |
-          # Download latest Render CLI release tarball (confirmed v2.1.4)
-          curl -Lo render.tar.gz https://github.com/render-oss/cli/releases/download/v2.1.4/render_linux_amd64.tar.gz
-
-          # Extract the tarball
-          tar -xzf render.tar.gz
-
-          # Move the binary to PATH
-          sudo mv render /usr/local/bin/
-
+          # Install the latest Render CLI using a direct installation script
+          curl -o- https://cli.render.com/install.sh | bash
+          # Add the Render CLI to the PATH
+          echo "$(pwd)/bin" >> $GITHUB_PATH
           # Verify installation
           render --version
-
           # Authenticate with Render API key
           render login --api-key ${{ secrets.RENDER_API_KEY }}
-
           # Deploy the service
           render deploy service <SERVICE-ID> --branch master
