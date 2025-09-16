@@ -44,7 +44,7 @@ jobs:
       # 8️⃣ Deploy to Render using the official action
       - name: Deploy to Render
         if: success()
-        uses: render-oss/action@v0.0.3
+        uses: render-inc/render-cli-action@v0.0.3  # <-- Corrected action name
         with:
           serviceId: <SERVICE-ID>
           apiKey: ${{ secrets.RENDER_API_KEY }}
