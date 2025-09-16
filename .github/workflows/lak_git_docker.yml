@@ -1,4 +1,4 @@
-name: Build, Run, and Test with Robot Framework
+name: Build, Run, Test, and Deploy
 
 on:
   push:
@@ -8,28 +8,50 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  test-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2️⃣ Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # 3️⃣ Build Docker image
       - name: Build Docker image
         run: docker build -t my-app-image .
 
+      # 4️⃣ Run server container
       - name: Run server container
         run: docker run -d -p 5000:5000 --name my-app-container my-app-image
 
+      # 5️⃣ Wait for server to start
       - name: Wait for server to start
         run: sleep 15
 
+      # 6️⃣ Run Robot Framework Tests
       - name: Run Robot Framework Tests
         run: docker exec -i my-app-container /bin/bash -c "robot /app/login_test.robot"
 
+      # 7️⃣ Show Docker logs if test fails
       - name: Show Docker logs if test fails
         if: failure()
         run: docker logs my-app-container
+
+      # 8️⃣ Install Render CLI (only if tests pass)
+      - name: Install Render CLI
+        if: success()
+        run: npm install -g @render/cli
+
+      # 9️⃣ Authenticate with Render
+      - name: Authenticate with Render
+        if: success()
+        run: render login --api-key ${{ secrets.RENDER_API_KEY }}
+
+      # 🔟 Deploy to Render (only if tests pass)
+      - name: Deploy to Render
+        if: success()
+        run: render deploy service <SERVICE-ID> --branch master
