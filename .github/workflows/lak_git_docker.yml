@@ -49,92 +49,21 @@ jobs:
         run: |
           set -euo pipefail
 
-          echo "➡️ Attempting to download Render CLI (tries a few known release asset URLs)"
+          echo "➡️ Downloading Render CLI v2.2.0"
+          curl -fL -o render-cli.zip https://github.com/render-oss/cli/releases/download/v2.2.0/cli_2.2.0_linux_amd64.zip
 
-          # Candidate URLs (tries in order). These match the release asset naming used on GitHub releases (cli_<ver>_linux_amd64.zip).
-          urls=(
-            "https://github.com/render-oss/cli/releases/download/v2.2.0/cli_2.2.0_linux_amd64.zip"
-            "https://github.com/render-oss/cli/releases/download/v2.1.5/cli_2.1.5_linux_amd64.zip"
-            "https://github.com/render-oss/cli/releases/download/v2.1.4/cli_2.1.4_linux_amd64.zip"
-            # fallback generic (may or may not exist depending on repo)
-            "https://github.com/render-oss/cli/releases/latest/download/cli_linux_amd64.zip"
-          )
+          echo "➡️ Extracting Render CLI"
+          unzip -q render-cli.zip -d render_cli_extracted
+          ls -R render_cli_extracted
 
-          succeeded=0
-          for u in "${urls[@]}"; do
-            echo "Trying: $u"
-            # -f to fail on HTTP error, -L to follow redirects, -S show error, -o target file
-            if curl -fL -S -o render-cli.zip "$u"; then
-              sz=$(wc -c < render-cli.zip || echo 0)
-              echo "Downloaded size: ${sz} bytes"
-              if [ "$sz" -gt 1000 ]; then
-                echo "Good download (size > 1k)."
-                succeeded=1
-                break
-              else
-                echo "Downloaded file looks tiny (<=1k). Showing contents for debug:"
-                echo "------ start of file ------"
-                cat render-cli.zip || true
-                echo "------- end of file -------"
-                rm -f render-cli.zip
-              fi
-            else
-              echo "curl failed for $u"
-              rm -f render-cli.zip || true
-            fi
-          done
+          echo "➡️ Moving render binary to PATH"
+          sudo mv render_cli_extracted/render /usr/local/bin/render
+          sudo chmod +x /usr/local/bin/render
 
-          if [ "$succeeded" -eq 0 ]; then
-            echo "All release-asset downloads failed or returned tiny responses — falling back to Render's install script."
-            echo "Running render.com/install script (fallback)..."
-            # run the official install script (may install in user dir); we'll then try to locate it
-            if curl -fsSL https://render.com/install | bash; then
-              echo "Install script executed. Searching for 'render' binary in common locations..."
-              # Try to locate binary in PATH and common install locations
-              if command -v render >/dev/null 2>&1 ; then
-                echo "render found in PATH: $(command -v render)"
-                render --version || true
-              elif [ -x "$HOME/.local/bin/render" ]; then
-                echo "Found at $HOME/.local/bin/render. Moving to /usr/local/bin/"
-                sudo mv "$HOME/.local/bin/render" /usr/local/bin/render
-                sudo chmod +x /usr/local/bin/render
-              else
-                echo "ERROR: render binary not found after fallback install. Exiting."
-                exit 1
-              fi
-            else
-              echo "Fallback install script failed. Exiting."
-              exit 1
-            fi
-          else
-            # we have a good zip
-            echo "Unzipping downloaded asset..."
-            mkdir -p render_cli_extracted
-            unzip -q render-cli.zip -d render_cli_extracted
-
-            # find a plausible binary inside the zip
-            candidate=$(find render_cli_extracted -type f -maxdepth 3 -print | grep -E '/render$|/cli$|render$|cli$' | head -n1 || true)
-            if [ -z "$candidate" ]; then
-              # pick the first file if no obvious name
-              candidate=$(find render_cli_extracted -type f -maxdepth 3 -print | head -n1)
-            fi
-
-            if [ -z "$candidate" ]; then
-              echo "No file found inside zip — aborting."
-              ls -la render_cli_extracted || true
-              exit 1
-            fi
-
-            echo "Candidate binary found: $candidate"
-            sudo mv "$candidate" /usr/local/bin/render
-            sudo chmod +x /usr/local/bin/render
-          fi
-
-          echo "➡️ Final check: render --version"
+          echo "➡️ Checking Render CLI version"
           render --version
 
-          echo "➡️ Authenticate with Render"
-          # Non-interactive login using API key (RENDER_API_KEY must be in repo secrets)
+          echo "➡️ Authenticating with Render"
           render login --api-key "${RENDER_API_KEY}"
 
           echo "➡️ Deploying service"
